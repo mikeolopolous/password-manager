@@ -45,7 +45,7 @@ username_entry.insert(index="end", string="example@example.com")
 password_label = tk.Label(text="Password:", bg="white", fg="black")
 password_label.grid(column=0, row=3)
 
-password_entry = tk.Entry(width=21, bg="white", fg="black", highlightthickness=0, insertbackground="black")
+password_entry = tk.Entry(width=21, bg="white", fg="black", highlightthickness=0, insertbackground="black", show="*")
 password_entry.grid(column=1, row=3)
 
 generate_password_button = tk.Button(text="Generate Password", highlightbackground="white")
