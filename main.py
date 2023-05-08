@@ -12,6 +12,7 @@ LETTERS = [
 SYMBOLS = ["!", "#", "$", "&", "(", ")", "*", "%", "@", ".", "/", "¡", "+", "_"]
 NUMBERS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
+
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
     letters = [choice(LETTERS) for _ in range(randint(8, 10))]
@@ -26,17 +27,19 @@ def generate_password():
 
     pyperclip.copy(password)
 
+
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def save():
     website = website_entry.get()
     username = username_entry.get()
     password = password_entry.get()
 
-
     if len(website) == 0 or len(password) == 0:
         messagebox.showwarning(title="Oops", message="Please don't leave any fields empty!")
     else:
-        is_ok = messagebox.askokcancel(title=website, message=f"Username: {username} \nPassword: {password} \nAre you sure?")
+        is_ok = messagebox.askokcancel(
+            title=website,
+            message=f"Username: {username} \nPassword: {password} \nAre you sure?")
 
         if is_ok:
             new_entry = f"{website} | {username} | {password}"
@@ -48,6 +51,7 @@ def save():
                 password_entry.delete(0, last="end")
 
     website_entry.focus()
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = tk.Tk()
@@ -76,10 +80,10 @@ username_entry.insert(index="end", string="example@example.com")
 password_label = tk.Label(text="Password:", bg="white", fg="black")
 password_label.grid(column=0, row=3)
 
-password_entry = tk.Entry(width=21, bg="white", fg="black", highlightthickness=0, insertbackground="black", show="*")
+password_entry = tk.Entry(width=28, bg="white", fg="black", highlightthickness=0, insertbackground="black", show="*")
 password_entry.grid(column=1, row=3)
 
-generate_password_button = tk.Button(text="Generate Password", highlightbackground="white", command=generate_password)
+generate_password_button = tk.Button(text="Generate", width=7, highlightbackground="white", command=generate_password)
 generate_password_button.grid(column=2, row=3)
 
 add_button = tk.Button(text="Add", width=36, highlightbackground="white", command=save)
