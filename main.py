@@ -1,5 +1,6 @@
 import tkinter as tk
 import pyperclip
+import json
 from tkinter import messagebox
 from random import choice, randint, shuffle
 
@@ -33,24 +34,50 @@ def save():
     website = website_entry.get()
     username = username_entry.get()
     password = password_entry.get()
+    new_data = {
+        website: {
+            "email": username,
+            "password": password
+        }
+    }
 
     if len(website) == 0 or len(password) == 0:
         messagebox.showwarning(title="Oops", message="Please don't leave any fields empty!")
     else:
-        is_ok = messagebox.askokcancel(
-            title=website,
-            message=f"Username: {username} \nPassword: {password} \nAre you sure?")
-
-        if is_ok:
-            new_entry = f"{website} | {username} | {password}"
-            
-            with open(file="data.txt", mode="a") as data_file:
-                data_file.write(new_entry + "\n")
-
-                website_entry.delete(0, last="end")
-                password_entry.delete(0, last="end")
+        try:
+            with open(file="data.json", mode="r") as data_file:
+                data = json.load(data_file)
+        except FileNotFoundError:
+            with open(file="data.json", mode="w") as data_file:
+                json.dump(new_data, data_file, indent=4)
+        else:
+            data.update(new_data)
+            with open(file="data.json", mode="w") as data_file:
+                json.dump(data, data_file, indent=4)
+        finally:
+            website_entry.delete(0, last="end")
+            password_entry.delete(0, last="end")
 
     website_entry.focus()
+
+
+# ---------------------------- FIND PASSWWORD ------------------------------- #
+def find_password():
+    website = website_entry.get()
+    try:
+        with open(file="data.json", mode="r") as data_file:
+            data = json.load(data_file)
+    except FileNotFoundError:
+        messagebox.showerror(title="Error", message="No Data File Found")
+    else:
+        if website in data:
+            username = data[website]["email"]
+            password = data[website]["password"]
+            messagebox.showinfo(title=website, message=f"Username: {username}\nPassword: {password}")
+        else:
+            messagebox.showinfo(title="Error", message="No details for the website exist")
+    finally:
+        website_entry.delete(0, last='end')
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -66,9 +93,12 @@ canvas.grid(column=1, row=0)
 website_label = tk.Label(text="Website:", bg="white", fg="black")
 website_label.grid(column=0, row=1)
 
-website_entry = tk.Entry(width=38, bg="white", fg="black", highlightthickness=0, insertbackground="black")
-website_entry.grid(column=1, row=1, columnspan=2)
+website_entry = tk.Entry(width=28, bg="white", fg="black", highlightthickness=0, insertbackground="black")
+website_entry.grid(column=1, row=1)
 website_entry.focus()
+
+search_website_button = tk.Button(width=7, text="Search", highlightbackground="white", command=find_password)
+search_website_button.grid(column=2, row=1)
 
 username_label = tk.Label(text="Email/Username:", bg="white", fg="black")
 username_label.grid(column=0, row=2)
